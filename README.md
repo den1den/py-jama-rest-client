@@ -127,4 +127,5 @@ oauth_client = JamaClient('https://yourdomain.jamacloud.com', credentials=('clie
     ```
 
 ## Additional Documentation
-https://jamasoftware.github.io/py-jama-rest-client/
+  * [Developer Documentation](https://jamasoftware.github.io/py-jama-rest-client/)
+  * [Pypi docs](https://pypi.org/project/py-jama-rest-client/)
