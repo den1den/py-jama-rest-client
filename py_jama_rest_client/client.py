@@ -65,6 +65,9 @@ class JamaClient:
         py_jama_rest_client_logger.info('Created a new JamaClient instance. Domain: {} '
                                         'Connecting via Oauth: {}'.format(host_domain, oauth))
 
+    def is_authenticated(self):
+        return self.__core.has_token()
+
     def get_available_endpoints(self):
         """
         Returns a list of all the available endpoints.

@@ -102,7 +102,14 @@ class Core:
         time_before_request = time.time()
 
         # Post to the token server
-        response = requests.post(self.__token_host, auth=self.__credentials, data=data)
+        try:
+            response = requests.post(self.__token_host, auth=self.__credentials, data=data)
+        except requests.exceptions.ConnectionError:
+            print('Failed to connect to ' + self.__token_host)
+            return
+        except requests.exceptions.RequestException:
+            print('Failed to create request')
+            return
 
         # If success get relevant data
         if response.status_code in [200, 201]:
@@ -121,3 +128,5 @@ class Core:
         headers['Authorization'] = 'Bearer ' + self.__token
         return headers
 
+    def has_token(self):
+        return self.__token is not None
