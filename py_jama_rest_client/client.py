@@ -761,6 +761,9 @@ class JamaClient:
         response = self.__core.put(resource_path, data=data, headers=headers)
         return self.__handle_response_status(response)
 
+    def _get_all(self, resource, params=None, **kwargs):
+        return self.__get_all(resource, params, **kwargs)
+
     def __get_all(self, resource, params=None, **kwargs):
         """This method will get all of the resources specified by the resource parameter, if an id or some other
         parameter is required for the resource, include it in the params parameter.
@@ -869,4 +872,3 @@ class JamaClient:
         raise APIException("{} error".format(status),
                            status_code=status,
                            reason=response.reason)
-
