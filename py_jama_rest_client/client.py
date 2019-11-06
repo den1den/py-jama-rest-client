@@ -761,8 +761,36 @@ class JamaClient:
         response = self.__core.put(resource_path, data=data, headers=headers)
         return self.__handle_response_status(response)
 
-    def _get_all(self, resource, params=None, **kwargs):
-        return self.__get_all(resource, params, **kwargs)
+    def get_iter(self, resource, page_size=None, params=None):
+        """
+        Do a certain request to the API which returns the results after each query
+        :param resource: GET url location
+        :param page_size: The number of items to retrieve after each call
+        :param params: Extra GET parameters
+        :return: Iterable which yields an array after every call
+        """
+        next_start_index = 0
+        result_count = -1
+        page_size = min(page_size, self.__allowed_results_per_page) if page_size else self.__allowed_results_per_page
+        params = params if params else {}
+        assert 'startAt' not in params, 'get_iter() overwrites the param["startAt"]'
+        assert 'maxResults' not in params, 'get_iter() overwrites the param["maxResults"]'
+        params['startAt'] = next_start_index
+        params['maxResults'] = page_size
+        while result_count != 0:
+            page_response = self.__core.get(resource, params=params)
+            JamaClient.__handle_response_status(page_response)
+            page_json = page_response.json()
+            page_info = page_json['meta']['pageInfo']
+            next_start_index = page_info['startIndex'] + page_size
+            result_count = page_info['resultCount']
+            data = page_json.get('data')
+            yield data
+
+            if result_count < page_size:
+                return
+
+            params['startAt'] = next_start_index
 
     def __get_all(self, resource, params=None, **kwargs):
         """This method will get all of the resources specified by the resource parameter, if an id or some other
@@ -785,6 +813,10 @@ class JamaClient:
 
             page_data = page_json.get('data')
             data.extend(page_data)
+
+            if result_count < allowed_results_per_page:
+                # Not all requested results have returned, so we hit the end
+                break
 
         return data
 
