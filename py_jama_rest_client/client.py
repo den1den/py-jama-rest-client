@@ -771,7 +771,11 @@ class JamaClient:
         """
         next_start_index = 0
         result_count = -1
-        page_size = min(page_size, self.__allowed_results_per_page) if page_size else self.__allowed_results_per_page
+        if page_size:
+            assert page_size > 0, f'page_size (={page_size}) must be positive'
+            assert page_size <= self.__allowed_results_per_page, f'Cannot page size higher then {self.__allowed_results_per_page}'
+        else:
+            page_size = self.__allowed_results_per_page
         params = params if params else {}
         assert 'startAt' not in params, 'get_iter() overwrites the param["startAt"]'
         assert 'maxResults' not in params, 'get_iter() overwrites the param["maxResults"]'
@@ -904,3 +908,7 @@ class JamaClient:
         raise APIException("{} error".format(status),
                            status_code=status,
                            reason=response.reason)
+
+    def set_default_results_per_page(self, page_size):
+        assert page_size > 0 and page_size <= 50, f'page_size must be between 1 and 50, actual={page_size}'
+        self.__allowed_results_per_page = page_size
