@@ -357,6 +357,42 @@ class JamaClient:
         JamaClient.__handle_response_status(response)
         return response.json()['data']
 
+    def get_abstract_items_iter(self,
+                           project=None,
+                           item_type=None,
+                           document_key=None,
+                           release=None,
+                           created_date=None,
+                           modified_date=None,
+                           last_activity_date=None,
+                           contains=None,
+                           sort_by=None):
+        """
+        @see get_abstract_items
+        """
+        resource_path = 'abstractitems'
+        params = {}
+        if project is not None:
+            params['project'] = project
+        if item_type is not None:
+            params['itemType'] = item_type
+        if document_key is not None:
+            params['documentKey'] = document_key
+        if release is not None:
+            params['release'] = release
+        if created_date is not None:
+            params['createdDate'] = created_date
+        if modified_date is not None:
+            params['modifiedDate'] = modified_date
+        if last_activity_date is not None:
+            params['lastActivityDate'] = last_activity_date
+        if contains is not None:
+            params['contains'] = contains
+        if sort_by is not None:
+            params['sortBy'] = sort_by
+        return self.get_iter(resource_path, params=params)
+
+
     def get_abstract_items(self,
                            project=None,
                            item_type=None,
@@ -771,7 +807,7 @@ class JamaClient:
         """
         next_start_index = 0
         result_count = -1
-        if page_size:
+        if page_size is not None:
             assert page_size > 0, f'page_size (={page_size}) must be positive'
             assert page_size <= self.__allowed_results_per_page, f'Cannot page size higher then {self.__allowed_results_per_page}'
         else:
@@ -803,7 +839,7 @@ class JamaClient:
 
         start_index = 0
         result_count = -1
-        allowed_results_per_page = 20
+        allowed_results_per_page = self.__allowed_results_per_page
 
         data = []
 
