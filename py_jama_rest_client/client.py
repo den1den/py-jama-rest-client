@@ -327,6 +327,14 @@ class JamaClient:
         JamaClient.__handle_response_status(response)
         return response.json()['data']
 
+    def get_relationships_iter(self, project_id):
+        """
+        @see get_relationships
+        """
+        resource_path = 'relationships'
+        params = {'project': project_id}
+        return self.get_iter(resource_path, params=params)
+
     def get_relationships(self, project_id):
         """
         Returns a list of all relationships of a specified project
@@ -358,15 +366,15 @@ class JamaClient:
         return response.json()['data']
 
     def get_abstract_items_iter(self,
-                           project=None,
-                           item_type=None,
-                           document_key=None,
-                           release=None,
-                           created_date=None,
-                           modified_date=None,
-                           last_activity_date=None,
-                           contains=None,
-                           sort_by=None):
+                                project=None,
+                                item_type=None,
+                                document_key=None,
+                                release=None,
+                                created_date=None,
+                                modified_date=None,
+                                last_activity_date=None,
+                                contains=None,
+                                sort_by=None):
         """
         @see get_abstract_items
         """
@@ -391,7 +399,6 @@ class JamaClient:
         if sort_by is not None:
             params['sortBy'] = sort_by
         return self.get_iter(resource_path, params=params)
-
 
     def get_abstract_items(self,
                            project=None,
