@@ -79,6 +79,12 @@ class JamaClient:
         JamaClient.__handle_response_status(response)
         return response.json()['data']
 
+    def get_project(self, project_id):
+        resource_path = 'projects/' + str(project_id)
+        response = self.__core.get(resource_path)
+        JamaClient.__handle_response_status(response)
+        return response.json()['data']
+
     def get_projects(self):
         """This method will return all projects as JSON object
         :return: JSON Array of Item Objects.
